@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hikari</title>
+    <script src="../aes.js"></script>
+    <script src="../secured_data.js"></script>
+    <script src="../data.js"></script>
+    <script>
+      let data
+      let URL
+      let BODY
+      window.onload = function () {
+        if (HikariData.isLocked()) {
+          HikariData.promptForKey('unlock', 'Hikari password', '/hikari')
+        } else {
+          document.body.style.display = 'inherit'
+        }
+        HikariData.setForLeaving()
+        data = HikariData.get()
+
+        if (data) {
+          URL = 'https://api.particle.io/v1/devices/' + data['deviceid'] + '/color'
+          BODY = function(color) {
+            return 'access_token=' + data['access_token'] + '&args=' + JSON.stringify(color)
+          }
+        }
+      }
+    </script>
+  </head>
+  <style>
+    h1 {
+      text-align: center;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      display: none;
+    }
+    #outer {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #inner {
+      text-align: center;
+      margin: 0;
+    }
+  </style>
+  <body>
+    <div id="outer">
+      <div id="inner">
+        <h1>Goheeca's Hikari</h1>
+        <canvas id="colors"></canvas>
+      </div>
+    </div>
+  </body>
+  <script>function relMouseCoords(e){var t=0,a=0,n=0,o=0,r=this;do t+=r.offsetLeft-r.scrollLeft,a+=r.offsetTop-r.scrollTop;while(r=r.offsetParent);return n=e.pageX-t,o=e.pageY-a,{x:n,y:o}}function drawPicker(e,t){for(var a=e.width/2,n=e.height/2,o=a,r=n,i=e.getContext('2d'),s=1,c=(30+o)*Math.sin(s*(2*Math.PI)/360),d=t?'black':'white',l=0;360>l;l+=s){var h=l*(2*Math.PI)/360,f=i.createLinearGradient(a,n,a+o*Math.cos(h),n+r*Math.sin(h));f.addColorStop(0,d),f.addColorStop(1,'hsla('+l+', 100%, 50%, 1.0)'),i.beginPath(),i.fillStyle=f,i.moveTo(a,n),i.lineTo(a+o*Math.cos(h),n+r*Math.sin(h)),i.lineTo(a+o*Math.cos(h)+c*Math.sin(h),n+r*Math.sin(h)-c*Math.cos(h)),i.lineTo(a+Math.sin(h),n-Math.cos(h)),i.closePath(),i.fill()}}function togglePicker(){dark=!dark,drawPicker(canvas,dark)}function pick(e,t){var a=e.relMouseCoords(t),n=e.getContext('2d'),o=n.getImageData(a.x,a.y,1,1).data;return 0==o[3]?(o=null,togglePicker()):o=[o[0],o[1],o[2]],o}function resize(e){var t=Math.min(window.innerWidth,window.innerHeight);e.width=t/1.5,e.height=t/1.5}function ajax(e){var t=new XMLHttpRequest;t.open('POST',URL,!0),t.setRequestHeader('Content-Type','application/x-www-form-urlencoded'),t.send(BODY(e))}HTMLCanvasElement.prototype.relMouseCoords=relMouseCoords;var canvas=document.getElementById('colors'),dark=!0;resize(canvas),drawPicker(canvas,dark),canvas.addEventListener('click',function(e){var t=pick(canvas,e);null!=t&&ajax(t),e.stopPropagation()}),window.addEventListener('resize',function(){resize(canvas),drawPicker(canvas,dark)}),document.getElementById('outer').addEventListener('click',function(){togglePicker()});
+  </script>
+</html>

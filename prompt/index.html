@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <script src="../aes.js"></script>
+    <script src="../secured_data.js"></script>
+    <script src="../data.js"></script>
+  </head>
+  <script>
+    'use strict'
+
+    function flash(count) {
+      const passwordInput = document.getElementById('password')
+      function oneFlash() {
+        const before = passwordInput.style.borderColor
+        passwordInput.style.borderColor = 'red'
+        setTimeout(function () { passwordInput.style.borderColor = before }, 100)
+      }
+      if (count > 0) {
+        oneFlash()
+        setTimeout(function () { flash(count - 1) }, 200)
+      }
+    }
+
+    window.onload = function () {
+      const passwordInput = document.getElementById('password')
+
+      passwordInput.onkeydown = function (event) {
+        if (event.key === "Enter") {
+          const permanently = event.altKey
+          if (!obtainKey(passwordInput.value, permanently)) {
+            passwordInput.value = ''
+            flash(5)
+          }
+        }
+      }
+
+      const prompt = getPrompt()
+      if (prompt) {
+        passwordInput.placeholder = prompt
+      }
+    }
+  </script>
+  <style>
+    h1 { text-align: center; }
+  </style>
+  <body>
+    <h1>Goheeca's prompt</h1>
+    <p>Hit either <code>Enter</code> for a one-time authorization or <code>Alt+Enter</code> for a permanent authorization.</p>
+    <input id="password" type="password" placeholder="Enter the password" autofocus />
+  </body>
+</html>

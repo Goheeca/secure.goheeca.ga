@@ -1,0 +1,5 @@
+'use strict'
+
+const ENCRYPTED_HIKARI_DATA = 'U2FsdGVkX19oXRH++DWap6W/UwoTNHVsWtt18bJNBtkF0nssu5u7ec48hycEnfANwR0pzln8uuZNFk2mnAI3QSNRXHeQqYjKS+sg3MwCUgngEvBJjLB4M0vSI7s2dvt04Roz3IBaBQ9oYXyCv/DWLWC1qAv2vUIMPObHw+iCyRk='
+const PLAIN_HIKARI_DATA_INDEX = 'hikari-data'
+window.HikariData = securedData('HikariData', PLAIN_HIKARI_DATA_INDEX, ENCRYPTED_HIKARI_DATA)
